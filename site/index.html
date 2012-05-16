@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+ <title>try jsonpath</title>
+ <script src="js/html5.js"></script>
+ <script src="js/json2.js"></script>
+ <script src="js/jquery.js"></script>
+ <script src="js/jsonpath.js"></script>
+ <script>
+  $(function () {
+   var 
+    $query = $("#query"),
+    $data = $("#data"),
+    $result = $("#result"),
+    jsonSpace = 2,
+    initialData = { 
+     "store": {
+         "book": [ 
+           { "category": "reference",
+             "author": "Nigel Rees",
+             "title": "Sayings of the Century",
+             "price": 8.95
+           },
+           { "category": "fiction",
+             "author": "Evelyn Waugh",
+             "title": "Sword of Honour",
+             "price": 12.99
+           },
+           { "category": "fiction",
+             "author": "Herman Melville",
+             "title": "Moby Dick",
+             "isbn": "0-553-21311-3",
+             "price": 8.99
+           },
+           { "category": "fiction",
+             "author": "J. R. R. Tolkien",
+             "title": "The Lord of the Rings",
+             "isbn": "0-395-19395-8",
+             "price": 22.99
+           }
+         ],
+         "bicycle": {
+           "color": "red",
+           "price": 19.95
+         }
+       }
+     };
+
+   $data.html(JSON.stringify(initialData, null, jsonSpace));
+
+   $query.keyup(function (event) {
+    var query, data, result;
+
+    if (event.keyCode === 13) {
+     query = $.trim($query.val());
+     data = JSON.parse($.trim($data.val()));
+
+     result = jsonPath(data, query);
+
+     $result.html(JSON.stringify(result, null, jsonSpace));
+    }
+   });   
+  });
+ </script>
+
+ <link rel=stylesheet media=screen href="css/normalize.css"/>
+ <link rel=stylesheet media=screen href="css/style.css"/>
+</head>
+
+<body>
+ <textarea rows=15 cols=80 id=data>
+ </textarea>
+
+ <input type=text id=query value="$.store.book[2]">
+
+ <textarea rows=15 cols=80 id=result>
+ </textarea>
+
+ <footer>
+  jsonpath.js (not mine) 
+  <a href="http://code.google.com/p/jsonpath/">code</a>
+  <a href="http://code.google.com/p/jsonpath/wiki/ExprSyntax">reference</a>
+  <a href="http://goessner.net/articles/JsonPath/">articles</a>
+ </footer>
+</body>

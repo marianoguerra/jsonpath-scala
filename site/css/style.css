@@ -1,0 +1,24 @@
+body{
+ color: #eee;
+ margin: 2% 10%;
+ background-color: #333;
+}
+
+textarea, #query{
+ font: monospace;
+}
+
+#query, #data, #result{
+ display: table;
+ width: 100%;
+ margin: 1em;
+}
+
+footer{
+ text-align: center;
+ font-size: 0.8em;
+}
+
+a, a:visited{
+ color: #aaa;
+}
