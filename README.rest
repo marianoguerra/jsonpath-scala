@@ -1,0 +1,45 @@
+jsonpath-scala - a jsonpath implementation in scala
+===================================================
+
+jsonpath-scala is an implementation of jsonpath [1]
+in scala.
+
+the current implementation allows querying jsonpath to json datastructures
+built with liftweb's json implementation [2][3] but the library allows supporting
+other libraries just subclassing org.marianoguerra.jsonpath.JsonPath[T]
+
+this is early work and will not return the same results as other jsonpath
+implementation for some cases like recursive queries like $..foo, querying
+inside arrays, the value of empty results and wildcard usage.
+
+a nice next step (and a nice way of helping) would be to define a set of
+language independent tests to run accross all implementations, for example
+files with the query, source object and expected result as json to load on
+all implementations and test for correctness.
+
+[1] http://goessner.net/articles/JsonPath/
+[2] https://github.com/lift/lift/tree/master/framework/lift-base/lift-json/
+[3] http://liftweb.net/
+
+who?
+----
+
+marianoguerra
+
+why?
+----
+
+I need it for one project
+
+how?
+----
+
+check it out, install sbt >= 0.11.0 and run::
+
+        sbt test
+
+license?
+--------
+
+MIT
+
