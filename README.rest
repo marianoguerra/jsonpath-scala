@@ -1,12 +1,11 @@
 jsonpath-scala - a jsonpath implementation in scala
 ===================================================
 
-jsonpath-scala is an implementation of jsonpath [1]
-in scala.
+jsonpath-scala is an implementation of jsonpath [1] in scala.
 
 the current implementation allows querying jsonpath to json datastructures
 built with liftweb's json implementation [2][3] but the library allows supporting
-other libraries just subclassing org.marianoguerra.jsonpath.JsonPath[T]
+other libraries just subclassing org.marianoguerra.jsonpath.JsonPath[T].
 
 this is early work and will not return the same results as other jsonpath
 implementation for some cases like recursive queries like $..foo, querying
@@ -18,7 +17,9 @@ files with the query, source object and expected result as json to load on
 all implementations and test for correctness.
 
 [1] http://goessner.net/articles/JsonPath/
+
 [2] https://github.com/lift/lift/tree/master/framework/lift-base/lift-json/
+
 [3] http://liftweb.net/
 
 who?
@@ -36,7 +37,27 @@ how?
 
 check it out, install sbt >= 0.11.0 and run::
 
+        git clone https://github.com/marianoguerra/jsonpath-scala.git 
+        cd jsonpath-scala
         sbt test
+
+you can play with it in a scala REPL::
+
+        sbt console
+
+and then some examples::
+
+        scala> import org.marianoguerra.jsonpath.liftjson.JsonPath
+        import org.marianoguerra.jsonpath.liftjson.JsonPath
+
+        scala> import net.liftweb.json._
+        import net.liftweb.json._
+
+        scala> JsonPath.query("$.name", "{\"name\": \"mariano\"}")
+        res0: Either[org.marianoguerra.jsonpath.Error,net.liftweb.json.package.JValue] = Right(JString(mariano))
+
+        scala> JsonPath.query("$.name", JObject(List(JField("name", JString("mariano")))))
+        res1: Either[org.marianoguerra.jsonpath.Error,net.liftweb.json.package.JValue] = Right(JString(mariano))
 
 license?
 --------
