@@ -59,6 +59,14 @@ class ParserSpec extends FlatSpec with ShouldMatchers {
       result should be (Root())
   }
 
+  it should "parse array access on the root object" in {
+      val result = parser.parse(parser.root, "$[1]").get
+      result should be (ArrayAccess(Root(), ArraySlice(1, 2)))
+
+      val result1 = parser.parse(parser.root, "$[*]").get
+      result1 should be (ArrayAccess(Root(), AllArrayItems()))
+  }
+
   it should "parse array slice with just index" in {
     def check(index: Int) = {
       val result = parser.parse(parser.arraySlice, "[" + index + "]").get
@@ -122,11 +130,11 @@ class ParserSpec extends FlatSpec with ShouldMatchers {
       result should be (expected)
     }
 
-    check("$.name", List(Field(false, "name")))
-    check("$..name", List(Field(true, "name")))
-    check("$['name']", List(Field(false, "name")))
-    check("$.name[2]", List(ArrayAccess(Field(false, "name"), ArraySlice(2, 3))))
-    check("$['name'][2]", List(ArrayAccess(Field(false, "name"), ArraySlice(2, 3))))
+    check("$.name", List(Root(), Field(false, "name")))
+    check("$..name", List(Root(), Field(true, "name")))
+    check("$['name']", List(Root(), Field(false, "name")))
+    check("$.name[2]", List(Root(), ArrayAccess(Field(false, "name"), ArraySlice(2, 3))))
+    check("$['name'][2]", List(Root(), ArrayAccess(Field(false, "name"), ArraySlice(2, 3))))
   }
 
   it should "parse expressions from http://goessner.net/articles/JsonPath/" in {
@@ -138,28 +146,31 @@ class ParserSpec extends FlatSpec with ShouldMatchers {
     }
 
     check("$.store.book[0].title", List(
+      Root(),
       Field(false, "store"),
       ArrayAccess(Field(false, "book"), ArraySlice(0, 1)),
       Field(false, "title")
     ))
 
     check("$['store']['book'][0]['title']", List(
+      Root(),
       Field(false, "store"),
       ArrayAccess(Field(false, "book"), ArraySlice(0, 1)),
       Field(false, "title")
     ))
 
-    check("$..author", List(Field(true, "author")))
-    check("$.store.*", List(Field(false, "store"), AnyField(false)))
-    check("$.store..price", List(Field(false, "store"), Field(true, "price")))
-    check("$..*", List(AnyField(true)))
-    check("$.*", List(AnyField(false)))
-    check("$..book[2]", List(ArrayAccess(Field(true, "book"), ArraySlice(2, 3))))
+    check("$..author", List(Root(), Field(true, "author")))
+    check("$.store.*", List(Root(), Field(false, "store"), AnyField(false)))
+    check("$.store..price", List(Root(), Field(false, "store"), Field(true, "price")))
+    check("$..*", List(Root(), AnyField(true)))
+    check("$.*", List(Root(), AnyField(false)))
+    check("$..book[2]", List(Root(), ArrayAccess(Field(true, "book"), ArraySlice(2, 3))))
 
-    check("$.book[*]", List(ArrayAccess(Field(false, "book"), AllArrayItems())))
-    check("$..book[*]", List(ArrayAccess(Field(true, "book"), AllArrayItems())))
+    check("$.book[*]", List(Root(), ArrayAccess(Field(false, "book"), AllArrayItems())))
+    check("$..book[*]", List(Root(), ArrayAccess(Field(true, "book"), AllArrayItems())))
 
     check("$.store['store']..book['book'][0].title..title['title'].*..*.book[*]..book[*]", List(
+      Root(),
       Field(false, "store"),
       Field(false, "store"),
       Field(true, "book"),

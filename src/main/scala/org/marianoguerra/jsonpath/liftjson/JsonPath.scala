@@ -3,7 +3,7 @@ package org.marianoguerra.jsonpath.liftjson
 import net.liftweb.json._
 
 import org.marianoguerra.jsonpath
-import org.marianoguerra.jsonpath.{ BaseQuery, Field, AllArrayItems, ArrayAccess, ArraySlice }
+import org.marianoguerra.jsonpath.{ BaseQuery, Field, AllArrayItems, ArrayAccess, ArraySlice, Root }
 
 class JsonPath extends jsonpath.JsonPath[JValue] {
   implicit val formats = DefaultFormats // Brings in default date formats etc.
@@ -70,6 +70,8 @@ class JsonPath extends jsonpath.JsonPath[JValue] {
 
         JArray(slice)
       }
+
+      case Root() => obj
 
       case other => JNothing
     }

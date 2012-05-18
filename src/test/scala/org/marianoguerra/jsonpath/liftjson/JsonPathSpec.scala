@@ -9,7 +9,8 @@ class JsonPathSpec extends FlatSpec with ShouldMatchers {
   val justOneItem = "{\"name\": \"mariano\"}"
   val justOneArray = "{\"name\": [1, 2, 3, 4, 5]}"
   val deepItem = "{\"person\": {\"name\": \"mariano\"}}"
-  val listOfObjs = "{\"persons\": [{\"name\": \"bob\"}, {\"name\": \"patrick\"}, {\"name\": \"sandy\"}]}"
+  val objWithListOfObjs = "{\"persons\": [{\"name\": \"bob\"}, {\"name\": \"patrick\"}, {\"name\": \"sandy\"}]}"
+  val listOfObjs = "[{\"name\": \"bob\"}, {\"name\": \"patrick\"}, {\"name\": \"sandy\"}]"
 
   it should "find a single field" in {
     JsonPath.query("$.name", justOneItem) should be (Right(JString("mariano")))
@@ -56,17 +57,21 @@ class JsonPathSpec extends FlatSpec with ShouldMatchers {
 
   it should "access elements inside arrays" in {
     val result = Right(JArray(List(JString("bob"), JString("patrick"), JString("sandy"))))
-    JsonPath.query("$.persons[*].name", listOfObjs) should be (result)
+    JsonPath.query("$.persons[*].name", objWithListOfObjs) should be (result)
     // XXX should this return JNothing like jsonpath.js?
-    JsonPath.query("$.persons.name", listOfObjs) should be (result)
+    JsonPath.query("$.persons.name", objWithListOfObjs) should be (result)
     // XXX this returns something really weird:
     // Right(JObject(List(JField(name,JString(bob)), JField(name,JString(patrick)), JField(name,JString(sandy)))))
-    //JsonPath.query("$..name", listOfObjs) should be (result)
-    JsonPath.query("$.persons[1].name", listOfObjs) should be (Right(JArray(List(JString("patrick")))))
-    JsonPath.query("$.persons[10].name", listOfObjs) should be (Right(JArray(List())))
-    JsonPath.query("$.persons[1].foo", listOfObjs) should be (Right(JArray(List())))
+    //JsonPath.query("$..name", objWithListOfObjs) should be (result)
+    JsonPath.query("$.persons[1].name", objWithListOfObjs) should be (Right(JArray(List(JString("patrick")))))
+    JsonPath.query("$.persons[10].name", objWithListOfObjs) should be (Right(JArray(List())))
+    JsonPath.query("$.persons[1].foo", objWithListOfObjs) should be (Right(JArray(List())))
     // XXX shouldn't this return JNothing?
-    JsonPath.query("$..foo", listOfObjs) should be (Right(JObject(List())))
+    JsonPath.query("$..foo", objWithListOfObjs) should be (Right(JObject(List())))
+  }
+
+  it should "allow array access on root" in {
+    JsonPath.query("$[0]", listOfObjs) should be (Right(JArray(List(JObject(List(JField("name", JString("bob"))))))))
   }
 }
 

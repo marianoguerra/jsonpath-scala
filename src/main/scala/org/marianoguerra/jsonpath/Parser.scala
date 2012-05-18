@@ -6,7 +6,7 @@ class Parser extends JavaTokenParsers {
 
     def query: Parser[List[BaseQuery]] =
       root ~ rep(childAccess) ^^ 
-        { case root ~ childAccess => childAccess }
+        { case root ~ childAccess => root :: childAccess }
     
     def childAccess: Parser[BaseQuery] = (
       subArrayAccess
@@ -18,7 +18,12 @@ class Parser extends JavaTokenParsers {
 
     def anyField: Parser[AnyField] = "*" ^^ ((x) => AnyField())
 
-    def root: Parser[Root] = "$" ^^ ((x) => Root())
+    def root: Parser[BaseQuery] =  rootArraySlice | simpleRoot
+
+    def simpleRoot: Parser[Root] = "$" ^^ ((x) => Root())
+
+    def rootArraySlice: Parser[ArrayAccess] = 
+      "$" ~> arraySlice ^^ ((slice) => ArrayAccess(Root(), slice))
 
     // field parsers
 

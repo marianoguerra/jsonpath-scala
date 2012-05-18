@@ -1,18 +1,16 @@
 package org.marianoguerra.jsonpath
 
 class BaseQuery
+class BaseField extends BaseQuery
 
-case class Root() extends BaseQuery
+case class Root() extends BaseField
 
 case class AnyField(val recursive: Boolean = false) extends BaseQuery
 
 case class Field(val recursive: Boolean, val name: String) 
-              extends BaseQuery
+              extends BaseField
 
-case class Fields(val recursive: Boolean, val names: String*) 
-              extends BaseQuery
-
-case class ArrayAccess(val field: Field, val slice: BaseArraySlice)
+case class ArrayAccess(val field: BaseField, val slice: BaseArraySlice)
               extends BaseQuery
 
 class BaseArraySlice() extends BaseQuery
